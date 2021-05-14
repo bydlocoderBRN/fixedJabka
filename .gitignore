@@ -23,7 +23,7 @@
 .idea/**/dynamic.xml
 .idea/**/uiDesigner.xml
 .idea/**/dbnavigator.xml
-
+*.xml
 # Gradle
 .idea/**/gradle.xml
 .idea/**/libraries
@@ -38,7 +38,7 @@
 # .idea/modules.xml
 # .idea/*.iml
 # .idea/modules
-# *.iml
+*.iml
 # *.ipr
 
 # CMake
@@ -48,7 +48,7 @@ cmake-build-*/
 .idea/**/mongoSettings.xml
 
 # File-based project format
-*.iws
+.iws
 
 # IntelliJ
 out/
