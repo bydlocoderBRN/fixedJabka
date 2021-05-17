@@ -10,12 +10,20 @@ public class FractalExplorer {
     private Rectangle2D.Double rect;
     private JFrame frame;
     private JButton buttonReset;
-    private JComboBox combo = new JComboBox();
-    private FractalGenerator tricornGenerator;
+    private JComboBox<Object> combo = new JComboBox<Object>();
+    private FractalGenerator tricorn;
+    private FractalGenerator burningShip;
+    private FractalGenerator mandelbrot;
+    private JPanel paneltop;
+    private JPanel panelbot;
+    private JLabel lbl1;
+
     public FractalExplorer(int size){
         size_fractal=size;
-        fractalGenerator = new Mandelbrot();
-        tricornGenerator = new Tricorn();
+        mandelbrot = new Mandelbrot();
+        fractalGenerator = mandelbrot;
+        tricorn = new Tricorn();
+        burningShip = new BurningShip();
         content = new JImageDisplay(size_fractal,size_fractal);
         rect = new Rectangle2D.Double();
         fractalGenerator.getInitialRange(rect);
@@ -30,7 +38,9 @@ public class FractalExplorer {
         buttonReset.addActionListener(resetlistener);
         MouseListener click = new MouseZoomListener();
         content.addMouseListener(click);
-        combo.addItem(tricornGenerator);
+        combo.addItem(mandelbrot);
+        combo.addItem(tricorn);
+        combo.addItem(burningShip);
         combo.addActionListener(resetlistener);
         frame.add(combo, BorderLayout.NORTH);
         frame.add(content, BorderLayout.CENTER);
@@ -72,8 +82,13 @@ public class FractalExplorer {
                 drawFractal();
             }
             if (e.getSource() == combo){
-                if (combo.getSelectedItem() == tricornGenerator){
-                    fractalGenerator = tricornGenerator;
+                if (combo.getSelectedItem() == tricorn){
+                    fractalGenerator = tricorn;
+                    fractalGenerator.getInitialRange(rect);
+                    drawFractal();
+                }
+                if (combo.getSelectedItem() == burningShip){
+                    fractalGenerator = burningShip;
                     fractalGenerator.getInitialRange(rect);
                     drawFractal();
                 }
