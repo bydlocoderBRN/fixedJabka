@@ -1,7 +1,11 @@
+import javax.imageio.ImageIO;
 import javax.swing.*;
+import javax.swing.filechooser.FileFilter;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.geom.Rectangle2D;
+import java.io.File;
 
 public class FractalExplorer {
     private int size_fractal;
@@ -17,6 +21,9 @@ public class FractalExplorer {
     private JPanel paneltop;
     private JPanel panelbot;
     private JLabel lbl1;
+    private JButton buttonSave;
+    private JFileChooser saver = new JFileChooser();
+
 
     public FractalExplorer(int size){
         size_fractal=size;
@@ -34,21 +41,31 @@ public class FractalExplorer {
         content.setLayout(new BorderLayout());
         frame = new JFrame("Фрактал");
         buttonReset = new JButton("Сброс");
+        buttonSave = new JButton("Сохранить");
         ActionListener resetlistener = new ResetActionListener();
         buttonReset.addActionListener(resetlistener);
+        buttonSave.addActionListener(resetlistener);
         MouseListener click = new MouseZoomListener();
         content.addMouseListener(click);
         combo.addItem(mandelbrot);
         combo.addItem(tricorn);
         combo.addItem(burningShip);
         combo.addActionListener(resetlistener);
-        frame.add(combo, BorderLayout.NORTH);
+        lbl1 = new JLabel("Выберите фрактал:");
+        paneltop = new JPanel();
+        panelbot = new JPanel();
+        paneltop.add(lbl1);
+        paneltop.add(combo);
+        panelbot.add(buttonReset);
+        panelbot.add(buttonSave);
+        frame.add(paneltop, BorderLayout.NORTH);
         frame.add(content, BorderLayout.CENTER);
-        frame.add(buttonReset,BorderLayout.SOUTH);
+        frame.add(panelbot,BorderLayout.SOUTH);
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.pack ();
         frame.setVisible (true);
         frame.setResizable (false);
+
 
     }
     private void drawFractal (){
@@ -92,7 +109,25 @@ public class FractalExplorer {
                     fractalGenerator.getInitialRange(rect);
                     drawFractal();
                 }
+
+                    }
+            if (e.getSource() == buttonSave){
+                FileFilter filter = new FileNameExtensionFilter("PNG Images", "png");
+                saver.setFileFilter(filter);
+                saver.setAcceptAllFileFilterUsed(false);
+                if (saver.showSaveDialog(frame)== JFileChooser.APPROVE_OPTION){
+                    File pathh = saver.getSelectedFile();
+                    File path = new File(pathh.getPath() + ".png");
+                    try {
+                        ImageIO.write(content.getImage(), "png", path);
+                    }
+                    catch (Exception exception) {
+                        JOptionPane.showMessageDialog(content, exception.getMessage(), "Cannot Save Image", JOptionPane.ERROR_MESSAGE);
+                    }
+
+                }
             }
+
         }
     }
     class MouseZoomListener extends MouseAdapter{
