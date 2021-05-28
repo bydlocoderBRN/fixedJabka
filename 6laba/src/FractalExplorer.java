@@ -156,9 +156,38 @@ public class FractalExplorer {
     }
 
     private class FractalWorker extends SwingWorker<Object, Object>{
+        double xCoord;
+        double yCoord;
+        float hue;
+        int y = 0;
+        FractalWorker(int y){
+            this.y = y;
+        }
         @Override
         protected Object doInBackground() throws Exception {
+
+            int[] rgbColorBack = new int[800];
+
+
+            for (int x= 0; x <size_fractal; x++){
+                    xCoord = FractalGenerator.getCoord (rect.x, rect.x + rect.width,
+                            size_fractal, x);
+                    yCoord = FractalGenerator.getCoord (rect.y, rect.y + rect.height,
+                            size_fractal, y);
+                    if (fractalGenerator.numIterations(xCoord,yCoord) == -1)
+                        rgbColorBack[x] = 0;
+                    else {
+                        hue = 0.7f + (float) fractalGenerator.numIterations(xCoord,yCoord) / 200f;
+                        rgbColorBack[x] = Color.HSBtoRGB(hue, 1f, 1f);
+
+                    };
+            }
             return null;
+        }
+
+        @Override
+        protected void done() {
+            super.done();
         }
     }
 }
