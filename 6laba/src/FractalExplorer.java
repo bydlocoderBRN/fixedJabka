@@ -154,21 +154,19 @@ public class FractalExplorer {
         fractal.drawFractal();
 
     }
-
+    SwingWorker<Object, Object> worker = new FractalWorker(1);
     private class FractalWorker extends SwingWorker<Object, Object>{
         double xCoord;
         double yCoord;
         float hue;
         int y = 0;
+        int[] rgbColorBack = new int[size_fractal];
         FractalWorker(int y){
             this.y = y;
         }
+
         @Override
         protected Object doInBackground() throws Exception {
-
-            int[] rgbColorBack = new int[800];
-
-
             for (int x= 0; x <size_fractal; x++){
                     xCoord = FractalGenerator.getCoord (rect.x, rect.x + rect.width,
                             size_fractal, x);
@@ -183,11 +181,16 @@ public class FractalExplorer {
                     };
             }
             return null;
-        }
+            }
 
         @Override
         protected void done() {
+            for (int x= 0; x <size_fractal; x++)
+                content.drawPixel(x,y,rgbColorBack[x]);
+            content.repaint(0,0,y,size_fractal,1);
             super.done();
         }
+    }
+
     }
 }
