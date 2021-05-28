@@ -67,33 +67,19 @@ public class FractalExplorer {
         frame.setResizable (false);
 
 
-    }
+    }int rows_remaining =0;
     private void drawFractal (){
-        double xCoord;
-        double yCoord;
-        float hue;
-        int rgbColor;
+
         for (int x= 0; x <size_fractal; x++){
-            for (int y = 0; y < size_fractal; y++){
-                xCoord = FractalGenerator.getCoord (rect.x, rect.x + rect.width,
-                        size_fractal, x);
-                yCoord = FractalGenerator.getCoord (rect.y, rect.y + rect.height,
-                        size_fractal, y);
-                if (fractalGenerator.numIterations(xCoord,yCoord) == -1)
-                    content.drawPixel(x,y,0);
-                else {
-                    hue = 0.7f + (float) fractalGenerator.numIterations(xCoord,yCoord) / 200f;
-                    rgbColor = Color.HSBtoRGB(hue, 1f, 1f);
-                    content.drawPixel(x,y,rgbColor);
+            SwingWorker<Object, Object> worker = new FractalWorker(x);
+            worker.execute();
 
-                };
-            }
         }
-        content.repaint();
-
+        rows_remaining = 0;
     }
     class ResetActionListener implements ActionListener {
         public void actionPerformed(ActionEvent e) {
+            if (rows_remaining == size_fractal){
             if (e.getSource() == buttonReset){
                 fractalGenerator.getInitialRange(rect);
                 drawFractal();
@@ -134,16 +120,19 @@ public class FractalExplorer {
             }
 
         }
+        }
     }
     class MouseZoomListener extends MouseAdapter{
         @Override
         public void mouseClicked(MouseEvent e){
+            if (rows_remaining == size_fractal){
             double xCoord = FractalGenerator.getCoord (rect.x, rect.x + rect.width,
                     size_fractal, e.getX());
             double yCoord = FractalGenerator.getCoord (rect.y, rect.y + rect.height,
                     size_fractal, e.getY());
             fractalGenerator.recenterAndZoomRange(rect,xCoord,yCoord,0.5);
             drawFractal();
+        }
         }
     }
 
@@ -154,13 +143,14 @@ public class FractalExplorer {
         fractal.drawFractal();
 
     }
-    SwingWorker<Object, Object> worker = new FractalWorker(1);
+
     private class FractalWorker extends SwingWorker<Object, Object>{
         double xCoord;
         double yCoord;
         float hue;
         int y = 0;
         int[] rgbColorBack = new int[size_fractal];
+
         FractalWorker(int y){
             this.y = y;
         }
@@ -189,8 +179,8 @@ public class FractalExplorer {
                 content.drawPixel(x,y,rgbColorBack[x]);
             content.repaint(0,0,y,size_fractal,1);
             super.done();
+            rows_remaining+=1;
         }
     }
 
     }
-}
