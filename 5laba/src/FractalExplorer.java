@@ -109,6 +109,11 @@ public class FractalExplorer {
                     fractalGenerator.getInitialRange(rect);
                     drawFractal();
                 }
+                if (combo.getSelectedItem() == mandelbrot){
+                    fractalGenerator = mandelbrot;
+                    fractalGenerator.getInitialRange(rect);
+                    drawFractal();
+                }
 
                     }
             if (e.getSource() == buttonSave){
